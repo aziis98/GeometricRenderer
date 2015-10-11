@@ -7,7 +7,7 @@ import java.io.*;
 
 public class TestCanvas {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         Canvas canvas = new Canvas();
 

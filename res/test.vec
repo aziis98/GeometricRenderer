@@ -1,0 +1,36 @@
+translate 50% 50%
+
+# Initial definitions
+define 'white' 0xFFFFFF
+define 'black' 0x000000
+
+background white
+
+# Geometry definitions
+point 'A' 0 0
+point 'B' 150 100
+point 'C' 130 150
+
+line 'AB' A,B
+line 'BC' B,C
+line 'CA' C,A
+
+centroid 'M' A,B                        # the centroid of two points is the midpoint
+line-perp 'p1' M AB
+point-intersect 'P' p1 AB
+
+curve 'curve1' A,B,C
+orthocenter 'Q' A,B,C
+
+# Actual rendering
+fill 0x000000
+border 0xFF0000
+border-width 1.5
+
+draw AB
+draw curve1
+
+fill 0x0000FF
+draw P
+
+# comment, end of file

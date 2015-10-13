@@ -47,6 +47,13 @@ public class Canvas {
         paintStack.add( iCanvasPainter );
     }
 
+    public void draw(ICanvasPainter... iCanvasPainter) {
+        for (ICanvasPainter painter : iCanvasPainter)
+        {
+            draw( painter );
+        }
+    }
+
     //region Base Functions
 
     public void setColor(Color color) {

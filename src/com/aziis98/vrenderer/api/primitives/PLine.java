@@ -28,6 +28,25 @@ public class PLine implements ICanvasPainter, IPrimitive {
         this.c = a.getX().mul( b.getY() ).sub( b.getX().mul( a.getY() ) );
     }
 
+    public DyNumber getA() {
+        return a;
+    }
+
+    public DyNumber getB() {
+        return b;
+    }
+
+    public DyNumber getC() {
+        return c;
+    }
+
+    public PSegment toSegmentForm() {
+        PPoint p1 = new PPoint( DyNumber.cost( 0 ), c.sub( a.mul( 0 ) ).div( b ) );
+        PPoint p2 = new PPoint( DyNumber.cost( 500 ), c.sub( a.mul( 500 ) ).div( b ) );
+
+        return new PSegment(p1, p2);
+    }
+
     @Override
     public void draw(Graphics2D g, Config config) {
         double ty = -g.getTransform().getTranslateY();
@@ -54,6 +73,10 @@ public class PLine implements ICanvasPainter, IPrimitive {
         return new PLine( this.b, this.a.negate(), point.getX().mul( b ).sub( point.getY().mul( a ) ) );
     }
 
+    public DyNumber distance(PPoint point) {
+        PPoint p1 = perpendicular( point ).intersect( this );
+        return PPoint.distance( point, p1 );
+    }
 
     @Override
     public String toString() {

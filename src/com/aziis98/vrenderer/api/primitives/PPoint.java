@@ -9,7 +9,7 @@ public class PPoint implements ICanvasPainter, IPrimitive {
 
     public static final double DOT_PERCENT = 0.005;
 
-    private DyNumber x, y;
+    DyNumber x, y;
 
 
     public PPoint(double x, double y) {

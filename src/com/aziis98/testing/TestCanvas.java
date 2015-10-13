@@ -33,6 +33,7 @@ public class TestCanvas {
         // PPoint p7 = PPoint.orthocenter( p1, p2, p3 );
         PCircle c1 = new PCircle( p1, p2, p3 );
 
+        PPoint[] ps1 = c1.intersect( l2 );
 
         canvas.setBackground( WHITE );
 
@@ -51,6 +52,7 @@ public class TestCanvas {
         canvas.setColor( BLUE );
         canvas.draw( p5 );
         canvas.draw( p6 );
+        canvas.draw( ps1 );
 
         ImageIO.write( canvas.renderImage( 1920, 1080 ), "png", new File( "res/TestResult.png" ) );
 

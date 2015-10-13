@@ -7,21 +7,29 @@ import java.awt.*;
 
 public class PSegment extends PLine {
 
-    private PPoint a, b;
+    PPoint p1, p2;
 
-    public PSegment(PPoint a, PPoint b) {
-        super( a, b );
-        this.a = a;
-        this.b = b;
+    public PSegment(PPoint p1, PPoint p2) {
+        super( p1, p2 );
+        this.p1 = p1;
+        this.p2 = p2;
     }
 
     @Override
     public void draw(Graphics2D g, Config config) {
-        GraphicsHelper.drawLine( g, a.getX().get(), a.getY().get(), b.getX().get(), b.getY().get() );
+        GraphicsHelper.drawLine( g, p1.getX().get(), p1.getY().get(), p2.getX().get(), p2.getY().get() );
+    }
+
+    public DyNumber getDx() {
+        return p2.getX().sub( p1.getX() );
+    }
+
+    public DyNumber getDy() {
+        return p2.getY().sub( p1.getY() );
     }
 
     public PPoint getMidpoint() {
-        return PPoint.centroid( a, b );
+        return PPoint.centroid( p1, p2 );
     }
 
     public PPoint intersect(PSegment segment) {

@@ -20,12 +20,20 @@ public interface DyNumber {
         return () -> get() * other.get();
     }
 
+    default DyNumber mul(double value) {
+        return () -> get() * value;
+    }
+
     default DyNumber div(DyNumber other) {
         return () -> get() / other.get();
     }
 
     default DyNumber div(double value) {
         return () -> get() / value;
+    }
+
+    default DyNumber abs() {
+        return () -> Math.abs( get() );
     }
 
     default DyNumber sqrt() {
@@ -40,6 +48,10 @@ public interface DyNumber {
         return () -> Math.pow( get(), value );
     }
 
+    default DyNumber pow2() {
+        return () -> get() * get();
+    }
+
     default DyNumber negate() {
         return () -> -get();
     }
@@ -51,6 +63,10 @@ public interface DyNumber {
 
     static boolean equals(DyNumber a, DyNumber b) {
         return a.get() == b.get();
+    }
+
+    static DyNumber distance(DyNumber a, DyNumber b) {
+        return a.mul( a ).add( b.mul( b ) ).sqrt();
     }
 
     interface DyOperator {

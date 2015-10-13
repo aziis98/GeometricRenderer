@@ -8,7 +8,7 @@ import java.awt.*;
 public class PLine implements ICanvasPainter {
 
     // DyNumber slope, intercept;
-    DyNumber a, b, c; // ax + by = c --> y=c/b - ax/b -->
+    DyNumber a, b, c; // ax + by = c --> y=c/b - ax/b
 
     public PLine(DyNumber a, DyNumber b, DyNumber c) {
         this.a = a;

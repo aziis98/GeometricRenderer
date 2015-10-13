@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 import java.util.*;
+import java.util.function.*;
 
 public class Canvas {
 
@@ -25,19 +26,38 @@ public class Canvas {
         return bufferedImage;
     }
 
-    public void traslateToCenter() {
-        pushDrawer( (g, config) -> g.setTransform( AffineTransform.getTranslateInstance( config.width / 2, config.height / 2 ) ) );
+    public void draw(Consumer<Graphics2D> simplePainter) {
+        draw( (g, config) -> simplePainter.accept( g ) );
     }
 
-    public void traslateBy(int dx, int dy) {
-        pushDrawer( (g, config) -> g.translate( dx, dy ) );
-    }
-
-    public void pushDrawer(ICanvasPainter iCanvasPainter) {
+    public void draw(ICanvasPainter iCanvasPainter) {
         paintStack.add( iCanvasPainter );
     }
 
+    //region Base Functions
+
+    public void setColor(Color color) {
+        draw( graphics2D -> graphics2D.setColor( color ) );
+    }
+
+    public void setBackground(Color color) {
+        draw( (g, config) -> {
+            g.setBackground( color );
+            g.clearRect( 0, 0, config.width, config.height );
+        });
+    }
+
+    public void traslateToCenter() {
+        draw( (g, config) -> g.setTransform( AffineTransform.getTranslateInstance( config.width / 2, config.height / 2 ) ) );
+    }
+
+    public void traslateBy(int dx, int dy) {
+        draw( (g, config) -> g.translate( dx, dy ) );
+    }
+
+    //endregion
+
     public static class Config {
-        private int width, height;
+        public int width, height;
     }
 }

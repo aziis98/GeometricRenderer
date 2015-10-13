@@ -4,6 +4,10 @@ package com.aziis98.vrenderer.api.primitives;
 public interface DyNumber {
     double get();
 
+    default int intValue() {
+        return (int) get();
+    }
+
     default DyNumber add(DyNumber other) {
         return () -> get() + other.get();
     }

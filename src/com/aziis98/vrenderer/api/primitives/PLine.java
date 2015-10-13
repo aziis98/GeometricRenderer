@@ -68,6 +68,9 @@ public class PLine implements ICanvasPainter, IPrimitive {
         return new PPoint( x, y );
     }
 
+    public PLine move(DyNumber dx, DyNumber dy) {
+        return new PLine( a, b, c.sub( a.mul( dx ) ).sub( b.mul( dy ) ) );
+    }
 
     public PLine perpendicular(PPoint point) {
         return new PLine( this.b, this.a.negate(), point.getX().mul( b ).sub( point.getY().mul( a ) ) );

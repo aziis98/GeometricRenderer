@@ -44,20 +44,36 @@ public class PCircle implements ICanvasPainter, IPrimitive {
         DyNumber d  = distance( dx, dy );
         DyNumber D  = segment.p1.getX().mul( segment.p2.getY() ).sub( segment.p2.getX().mul( segment.p1.getY() ) );
 
-        PPoint i1 = new PPoint(
-                D.mul( dy ).add( sgn( dy ).mul( dx ).mul( radius.pow2().mul( d.pow2() ).sub( D.pow2() ).sqrt() ) ).div( d.pow2() ),
+        D.mul( dy ).add( sgn( dy ).mul( dx ).mul( radius.pow2().mul( d.pow2() ).sub( D.pow2() ).sqrt() ) ).div( d.pow2() ),
                   D.mul( dx ).negate().add( dy.abs().mul( radius.pow2().mul( d.pow2() ).sub( D.pow2() ).sqrt() ) ).div( d.pow2() )
+
+                  D.mul( dy ).sub( sgn( dy ).mul( dx ).mul( radius.pow2().mul( d.pow2() ).sub( D.pow2() ).sqrt() ) ).div( d.pow2() ),
+                  D.mul( dx ).negate().sub( dy.abs().mul( radius.pow2().mul( d.pow2() ).sub( D.pow2() ).sqrt() ) ).div( d.pow2() )
+        */
+
+        PLine tline = line.move( center.getX(), center.getY() );
+
+        PPoint i1 = new PPoint(
+                tline.a.mul( tline.c ).add( tline.b.mul( radius.pow2().mul( tline.a.pow2().add( tline.b.pow2() ) ).sub( tline.c.pow2() ).sqrt() ) ).div( tline.a.pow2().add( tline.b.pow2() ) ).add( center.getX() ),
+                tline.b.mul( tline.c ).sub( tline.a.mul( radius.pow2().mul( tline.a.pow2().add( tline.b.pow2() ) ).sub( tline.c.pow2() ).sqrt() ) ).div( tline.a.pow2().add( tline.b.pow2() ) ).add( center.getY() )
         );
 
         PPoint i2 = new PPoint(
-                D.mul( dy ).sub( sgn( dy ).mul( dx ).mul( radius.pow2().mul( d.pow2() ).sub( D.pow2() ).sqrt() ) ).div( d.pow2() ),
-                  D.mul( dx ).negate().sub( dy.abs().mul( radius.pow2().mul( d.pow2() ).sub( D.pow2() ).sqrt() ) ).div( d.pow2() )
+                tline.a.mul( tline.c ).sub( tline.b.mul( radius.pow2().mul( tline.a.pow2().add( tline.b.pow2() ) ).sub( tline.c.pow2() ).sqrt() ) ).div( tline.a.pow2().add( tline.b.pow2() ) ).add( center.getX() ),
+                tline.b.mul( tline.c ).add( tline.a.mul( radius.pow2().mul( tline.a.pow2().add( tline.b.pow2() ) ).sub( tline.c.pow2() ).sqrt() ) ).div( tline.a.pow2().add( tline.b.pow2() ) ).add( center.getY() )
         );
 
         return new PPoint[] { i1, i2 };
-        */
+    }
 
-        return null;
+    public PPoint[] intersect(PCircle circle) {
+        PLine line = new PLine(
+                circle.center.getX().sub( center.getX() ).mul( 2 ),
+                circle.center.getY().sub( center.getY() ).mul( 2 ),
+                radius.pow2().sub( circle.radius.pow2() ).sub( center.getX().pow2() ).sub( center.getY().pow2() ).add( circle.center.getX().pow2() ).add( circle.center.getY().pow2() )
+        );
+
+        return intersect( line );
     }
 
     private static DyNumber sgn(DyNumber number) {

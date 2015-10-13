@@ -56,6 +56,10 @@ public interface DyNumber {
         return () -> -get();
     }
 
+    default DyNumber printout() {
+        System.out.println(get());
+        return this;
+    }
 
     static DyNumber cost(double value) {
         return () -> value;

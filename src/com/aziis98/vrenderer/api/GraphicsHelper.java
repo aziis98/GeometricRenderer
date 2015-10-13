@@ -8,4 +8,7 @@ public class GraphicsHelper {
         g.drawLine( (int) x1, (int) y1, (int) x2, (int) y2 );
     }
 
+    public static void drawCircle(Graphics2D g, double cx, double cy, double r) {
+        g.drawOval( (int) (cx - r), (int) (cy - r), (int) (r * 2), (int) (r * 2) );
+    }
 }

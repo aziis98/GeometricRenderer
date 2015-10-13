@@ -30,7 +30,8 @@ public class TestCanvas {
 
         PLine l3 = l1.perpendicular( p6 );
 
-        PPoint p7 = PPoint.orthocenter( p1, p2, p3 );
+        // PPoint p7 = PPoint.orthocenter( p1, p2, p3 );
+        PCircle c1 = new PCircle( p1, p2, p3 );
 
 
         canvas.setBackground( WHITE );
@@ -45,6 +46,7 @@ public class TestCanvas {
         canvas.draw( p2 );
         canvas.draw( p3 );
         canvas.draw( p4 );
+        canvas.draw( c1 );
 
         canvas.setColor( BLUE );
         canvas.draw( p5 );

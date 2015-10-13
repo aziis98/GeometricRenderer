@@ -62,6 +62,13 @@ public class PPoint implements ICanvasPainter, IPrimitive {
         return l1.intersect( l2 );
     }
 
+    public static DyNumber distance(PPoint a, PPoint b) {
+        DyNumber dx = b.getX().sub( a.getX() );
+        DyNumber dy = b.getY().sub( a.getY() );
+
+        return dx.mul( dx ).add( dy.mul( dy ) ).sqrt();
+    }
+
     @Override
     public boolean equals(Object o) {
         if ( this == o ) return true;

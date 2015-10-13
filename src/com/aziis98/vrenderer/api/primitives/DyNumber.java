@@ -36,6 +36,10 @@ public interface DyNumber {
         return () -> Math.pow( get(), other.get() );
     }
 
+    default DyNumber pow(double value) {
+        return () -> Math.pow( get(), value );
+    }
+
     default DyNumber negate() {
         return () -> -get();
     }

@@ -5,7 +5,7 @@ public interface DyNumber {
     double get();
 
     default int intValue() {
-        return (int) get();
+        return (int) (get() + 0.5);
     }
 
     default DyNumber add(DyNumber other) {
@@ -24,8 +24,8 @@ public interface DyNumber {
         return () -> get() / other.get();
     }
 
-    default DyNumber mod(DyNumber other) {
-        return () -> get() % other.get();
+    default DyNumber div(double value) {
+        return () -> get() / value;
     }
 
     default DyNumber sqrt() {
@@ -36,11 +36,18 @@ public interface DyNumber {
         return () -> Math.pow( get(), other.get() );
     }
 
+    default DyNumber negate() {
+        return () -> -get();
+    }
+
 
     static DyNumber cost(double value) {
         return () -> value;
     }
 
+    static boolean equals(DyNumber a, DyNumber b) {
+        return a.get() == b.get();
+    }
 
     interface DyOperator {
         float apply(float a, float b);

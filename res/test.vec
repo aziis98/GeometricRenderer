@@ -1,21 +1,39 @@
-translate 50% 50%
+# Grammar
 
-# Initial definitions
-define 'white' 0xFFFFFF
-define 'black' 0x000000
+# point [name] [x:int] [y:int]
+# point-centroid [name] [pointA],[pointB],...
+# point-orthocenter [name] [pointA],[pointB],[pointC]
+
+# line [name] [pointA],[pointB]
+# line-perp [name] [line] [point]
+# line-intersect [name] [lineA],[lineB]
+
+# circle [name] [cx] [cy] [radius]
+# circle [name] [center] [radius]
+# circle [name] [pointA],[pointB],[pointC]
+# circle-intersect [optnameA:point],[optnameB:point] [line]
+# circle-intersect [optnameA:point],[optnameB:point] [circle]
+
+# setcolor [color:int]
+# setbackground [color:int]     # only use once! (better if at the start)
+
+# translate 50% 50%
+
+
 
 background white
 
 # Geometry definitions
-point 'A' 0 0
-point 'B' 150 100
-point 'C' 130 150
+point A 0 0
+point B 150 100
+point C 130 150
 
 line 'AB' A,B
 line 'BC' B,C
 line 'CA' C,A
 
-centroid 'M' A,B                        # the centroid of two points is the midpoint
+# the centroid of two points is the midpoint
+centroid 'M' A,B
 line-perp 'p1' M AB
 point-intersect 'P' p1 AB
 

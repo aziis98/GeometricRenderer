@@ -1,6 +1,7 @@
 package com.aziis98.vrenderer.api;
 
 import java.awt.*;
+import java.awt.geom.*;
 import java.awt.image.*;
 import java.util.*;
 
@@ -25,19 +26,18 @@ public class Canvas {
     }
 
     public void traslateToCenter() {
-        pushDrawer( (g, config) -> g.translate( config.width / 2, config.height / 2 ) );
+        pushDrawer( (g, config) -> g.setTransform( AffineTransform.getTranslateInstance( config.width / 2, config.height / 2 ) ) );
     }
 
     public void traslateBy(int dx, int dy) {
         pushDrawer( (g, config) -> g.translate( dx, dy ) );
     }
 
-    private void pushDrawer(ICanvasPainter iCanvasPainter) {
+    public void pushDrawer(ICanvasPainter iCanvasPainter) {
         paintStack.add( iCanvasPainter );
     }
 
     public static class Config {
         private int width, height;
-        // ... render options ...
     }
 }

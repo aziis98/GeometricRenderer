@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class PPoint implements ICanvasPainter {
 
-    public static final int DOT_SIZE = 2;
+    public static final int DOT_SIZE = 4;
 
     private DyNumber x, y;
 

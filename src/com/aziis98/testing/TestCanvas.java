@@ -1,11 +1,12 @@
 package com.aziis98.testing;
 
-import com.aziis98.vrenderer.api.Canvas;
+import com.aziis98.vrenderer.api.*;
 import com.aziis98.vrenderer.api.primitives.*;
 
 import javax.imageio.*;
-import java.awt.*;
 import java.io.*;
+
+import static java.awt.Color.*;
 
 public class TestCanvas {
 
@@ -18,10 +19,12 @@ public class TestCanvas {
 
         PLine l1 = new PLine( p1, p2 );
 
-        canvas.setColor( Color.RED );
+        canvas.setBackground( WHITE );
+
+        canvas.setColor( RED );
         canvas.draw(l1);
 
-        canvas.setColor( Color.BLACK );
+        canvas.setColor( BLACK );
         canvas.draw(p1);
         canvas.draw(p2);
 

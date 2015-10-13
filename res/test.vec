@@ -16,6 +16,8 @@
 
 # setcolor [color:int]
 # setbackground [color:int]     # only use once! (better if at the start)
+# draw [name]
+# fill [name]
 
 # translate 50% 50%
 

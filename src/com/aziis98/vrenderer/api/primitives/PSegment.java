@@ -20,11 +20,11 @@ public class PSegment extends PLine {
         GraphicsHelper.drawLine( g, p1.getX().get(), p1.getY().get(), p2.getX().get(), p2.getY().get() );
     }
 
-    public DyNumber getDx() {
+    public DNumber getDx() {
         return p2.getX().sub( p1.getX() );
     }
 
-    public DyNumber getDy() {
+    public DNumber getDy() {
         return p2.getY().sub( p1.getY() );
     }
 

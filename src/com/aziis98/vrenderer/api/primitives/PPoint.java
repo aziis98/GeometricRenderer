@@ -9,25 +9,25 @@ public class PPoint implements ICanvasPainter, IPrimitive {
 
     public static final double DOT_PERCENT = 0.005;
 
-    DyNumber x, y;
+    DNumber x, y;
 
 
     public PPoint(double x, double y) {
-        this.x = DyNumber.cost( x );
-        this.y = DyNumber.cost( y );
+        this.x = DNumber.cost( x );
+        this.y = DNumber.cost( y );
     }
 
-    public PPoint(DyNumber x, DyNumber y) {
+    public PPoint(DNumber x, DNumber y) {
         this.x = x;
         this.y = y;
     }
 
 
-    public DyNumber getX() {
+    public DNumber getX() {
         return x;
     }
 
-    public DyNumber getY() {
+    public DNumber getY() {
         return y;
     }
 
@@ -40,8 +40,8 @@ public class PPoint implements ICanvasPainter, IPrimitive {
     }
 
     public static PPoint centroid(PPoint... array) {
-        DyNumber cx = array[0].getX();
-        DyNumber cy = array[0].getY();
+        DNumber cx = array[0].getX();
+        DNumber cy = array[0].getY();
 
         for (int i = 1; i < array.length; i++)
         {
@@ -62,9 +62,9 @@ public class PPoint implements ICanvasPainter, IPrimitive {
         return l1.intersect( l2 );
     }
 
-    public static DyNumber distance(PPoint a, PPoint b) {
-        DyNumber dx = b.getX().sub( a.getX() );
-        DyNumber dy = b.getY().sub( a.getY() );
+    public static DNumber distance(PPoint a, PPoint b) {
+        DNumber dx = b.getX().sub( a.getX() );
+        DNumber dy = b.getY().sub( a.getY() );
 
         return dx.mul( dx ).add( dy.mul( dy ) ).sqrt();
     }

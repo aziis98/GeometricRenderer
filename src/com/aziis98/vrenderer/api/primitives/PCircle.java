@@ -9,15 +9,15 @@ import static com.aziis98.vrenderer.api.GraphicsHelper.*;
 
 public class PCircle implements ICanvasPainter, IPrimitive {
 
-    private PPoint   center;
-    private DyNumber radius;
+    private PPoint  center;
+    private DNumber radius;
 
     public PCircle(PPoint a, PPoint b, PPoint c) {
         this.center = PPoint.orthocenter( a, b, c );
         this.radius = PPoint.distance( this.center, a );
     }
 
-    public PCircle(PPoint center, DyNumber radius) {
+    public PCircle(PPoint center, DNumber radius) {
         this.center = center;
         this.radius = radius;
     }
@@ -26,13 +26,18 @@ public class PCircle implements ICanvasPainter, IPrimitive {
         return center;
     }
 
-    public DyNumber getRadius() {
+    public DNumber getRadius() {
         return radius;
     }
 
     @Override
     public void draw(Graphics2D g, Config config) {
-        drawCircle( g, center.getX().get(), center.getY().get(), radius.get() );
+        drawCircle( g, center, radius);
+    }
+
+    @Override
+    public void fill(Graphics2D g, Config config) {
+        fillCircle( g, center, radius );
     }
 
     public PPoint[] intersect(PLine line) {
@@ -76,7 +81,7 @@ public class PCircle implements ICanvasPainter, IPrimitive {
         return intersect( line );
     }
 
-    private static DyNumber sgn(DyNumber number) {
+    private static DNumber sgn(DNumber number) {
         return () -> number.get() < 0 ? -1 : 1;
     }
 

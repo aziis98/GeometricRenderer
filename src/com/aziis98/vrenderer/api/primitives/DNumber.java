@@ -1,75 +1,75 @@
 package com.aziis98.vrenderer.api.primitives;
 
 @FunctionalInterface
-public interface DyNumber {
+public interface DNumber {
     double get();
 
     default int intValue() {
         return (int) (get() + 0.5);
     }
 
-    default DyNumber add(DyNumber other) {
+    default DNumber add(DNumber other) {
         return () -> get() + other.get();
     }
 
-    default DyNumber sub(DyNumber other) {
+    default DNumber sub(DNumber other) {
         return () -> get() - other.get();
     }
 
-    default DyNumber mul(DyNumber other) {
+    default DNumber mul(DNumber other) {
         return () -> get() * other.get();
     }
 
-    default DyNumber mul(double value) {
+    default DNumber mul(double value) {
         return () -> get() * value;
     }
 
-    default DyNumber div(DyNumber other) {
+    default DNumber div(DNumber other) {
         return () -> get() / other.get();
     }
 
-    default DyNumber div(double value) {
+    default DNumber div(double value) {
         return () -> get() / value;
     }
 
-    default DyNumber abs() {
+    default DNumber abs() {
         return () -> Math.abs( get() );
     }
 
-    default DyNumber sqrt() {
+    default DNumber sqrt() {
         return () -> Math.sqrt( get() );
     }
 
-    default DyNumber pow(DyNumber other) {
+    default DNumber pow(DNumber other) {
         return () -> Math.pow( get(), other.get() );
     }
 
-    default DyNumber pow(double value) {
+    default DNumber pow(double value) {
         return () -> Math.pow( get(), value );
     }
 
-    default DyNumber pow2() {
+    default DNumber pow2() {
         return () -> get() * get();
     }
 
-    default DyNumber negate() {
+    default DNumber negate() {
         return () -> -get();
     }
 
-    default DyNumber printout() {
+    default DNumber printout() {
         System.out.println(get());
         return this;
     }
 
-    static DyNumber cost(double value) {
+    static DNumber cost(double value) {
         return () -> value;
     }
 
-    static boolean equals(DyNumber a, DyNumber b) {
+    static boolean equals(DNumber a, DNumber b) {
         return a.get() == b.get();
     }
 
-    static DyNumber distance(DyNumber a, DyNumber b) {
+    static DNumber distance(DNumber a, DNumber b) {
         return a.mul( a ).add( b.mul( b ) ).sqrt();
     }
 

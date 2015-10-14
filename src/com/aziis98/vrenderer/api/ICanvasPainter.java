@@ -8,4 +8,6 @@ public interface ICanvasPainter {
 
     void draw(Graphics2D g, Config config);
 
+    default void fill(Graphics2D g, Config config) { }
+
 }

@@ -9,8 +9,8 @@ import static com.aziis98.vrenderer.api.GraphicsHelper.*;
 
 public class PCircle implements ICanvasPainter, IPrimitive {
 
-    private PPoint  center;
-    private DNumber radius;
+    PPoint  center;
+    DNumber radius;
 
     public PCircle(PPoint a, PPoint b, PPoint c) {
         this.center = PPoint.orthocenter( a, b, c );

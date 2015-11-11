@@ -64,7 +64,7 @@ public class TestCanvas {
         canvas.setColor( GREEN );
         canvas.draw( ps2 );
 
-        ImageIO.write( canvas.renderImage( 1920, 1080 ), "png", new File( "res/TestResult.png" ) );
+        ImageIO.write( canvas.renderImage( 1920, 1080, 1F ), "png", new File( "res/TestResult.png" ) );
 
     }
 

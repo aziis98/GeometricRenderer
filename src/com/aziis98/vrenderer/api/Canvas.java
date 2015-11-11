@@ -12,10 +12,11 @@ public class Canvas {
 
     private LinkedList<ICanvasPainter> paintStack = new LinkedList<>();
 
-    public BufferedImage renderImage(int width, int height) {
+    public BufferedImage renderImage(int width, int height, float scale) {
         Config config = new Config();
         config.width = width;
         config.height = height;
+        config.scale = scale;
         return renderImage( config );
     }
 
@@ -27,6 +28,8 @@ public class Canvas {
         {
             graphics2D.setRenderingHint( RenderingHints.KEY_ANTIALIASING,
                     config.antialiasing ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF );
+
+            graphics2D.scale( config.scale, config.scale );
         }
 
 
@@ -83,6 +86,7 @@ public class Canvas {
 
     public static class Config {
         public int width, height;
+        public float scale = 1F;
         public boolean antialiasing = true;
     }
 }

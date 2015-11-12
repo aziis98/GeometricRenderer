@@ -22,6 +22,10 @@ public class Settings {
 
     private HashMap<String, String> properties = new HashMap<>();
 
+    public void set(String key) {
+        set( key, "true" );
+    }
+
     public void set(String key, String value) {
         properties.put( key, value );
     }
@@ -47,8 +51,16 @@ public class Settings {
         }
     }
 
+    public boolean has(String key) {
+        return getBoolean( key );
+    }
+
     public double getDouble(String key) {
         return Double.parseDouble( getValue( key ) );
+    }
+
+    public boolean getBoolean(String key) {
+        return Boolean.parseBoolean( getValue( key ) );
     }
 
     /*

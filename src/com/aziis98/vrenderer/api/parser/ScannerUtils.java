@@ -8,4 +8,8 @@ public class ScannerUtils {
         return scanner.next( pattern ).replaceAll( pattern, "$" + groupID );
     }
 
+    public static int nextHexColor(Scanner scanner) {
+        return Integer.parseInt(nextPatternGroup( scanner, "#([0-9A-Fa-f]+)", 1 ), 16);
+    }
+
 }

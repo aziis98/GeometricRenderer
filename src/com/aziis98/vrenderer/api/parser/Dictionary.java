@@ -24,6 +24,11 @@ public class Dictionary {
         return get( key );
     }
 
+    public int size() {
+        return values.size();
+    }
+
+
     public String toNiceString() {
         StringBuilder sb = new StringBuilder( "Dictionary(\n" );
 

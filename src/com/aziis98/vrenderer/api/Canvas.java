@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 import java.util.*;
+import java.util.List;
 import java.util.function.*;
 
 public class Canvas {
@@ -57,6 +58,10 @@ public class Canvas {
         }
     }
 
+    public void draw(List<ICanvasPainter> iCanvasPainters) {
+        iCanvasPainters.forEach( this::draw );
+    }
+
     //region Base Functions
 
     public void setColor(Color color) {
@@ -64,7 +69,7 @@ public class Canvas {
     }
 
     public void setColor(int color) {
-        draw( graphics2D -> graphics2D.setColor( Utils.decodeColor( color ) ) );
+        setColor( Utils.decodeColor( color ) );
     }
 
     public void setBackground(Color color) {
@@ -72,6 +77,10 @@ public class Canvas {
             g.setBackground( color );
             g.clearRect( 0, 0, config.width, config.height );
         } );
+    }
+
+    public void setBackground(int color) {
+        setBackground( Utils.decodeColor( color ) );
     }
 
     public void traslateToCenter() {

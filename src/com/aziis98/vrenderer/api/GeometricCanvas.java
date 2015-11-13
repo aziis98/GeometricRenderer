@@ -9,15 +9,30 @@ import java.util.*;
 import java.util.List;
 import java.util.function.*;
 
-public class Canvas {
+public class GeometricCanvas {
 
     private LinkedList<ICanvasPainter> paintStack = new LinkedList<>();
 
-    public BufferedImage renderImage(int width, int height, float scale) {
+    public float RATIO_16_9 = 16F / 9F;
+    public BufferedImage renderImage( float ratio, int resolution) {
+        Config config = new Config();
+        config.width = (int) (ratio * resolution);
+        config.height = resolution;
+        return renderImage( config );
+    }
+
+    public BufferedImage renderImage(int width, int height) {
         Config config = new Config();
         config.width = width;
         config.height = height;
-        config.scale = scale;
+        return renderImage( config );
+    }
+
+    public BufferedImage renderImage(int width, int height, float resolution) {
+        Config config = new Config();
+        config.width = (int) (width * resolution);
+        config.height = (int) (height * resolution);
+        config.scale = 1 / resolution;
         return renderImage( config );
     }
 
@@ -32,7 +47,6 @@ public class Canvas {
 
             graphics2D.scale( config.scale, config.scale );
         }
-
 
         // Renderer
         for (ICanvasPainter painter : paintStack)
@@ -95,7 +109,7 @@ public class Canvas {
 
     public static class Config {
         public int width, height;
-        public float scale = 1F;
+        public float   scale        = 1F;
         public boolean antialiasing = true;
     }
 }

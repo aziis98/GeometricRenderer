@@ -1,7 +1,7 @@
 package com.aziis98.vrenderer.api.primitives;
 
 import com.aziis98.vrenderer.api.*;
-import com.aziis98.vrenderer.api.Canvas.*;
+import com.aziis98.vrenderer.api.GeometricCanvas.*;
 
 import java.awt.*;
 

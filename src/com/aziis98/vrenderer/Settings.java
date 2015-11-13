@@ -34,8 +34,23 @@ public class Settings {
         return properties.get( key );
     }
 
-    public int[] getDimensions(String key) {
-        return Arrays.stream( getValue( key ).split( "x" ) ).mapToInt( Integer::parseInt ).toArray();
+    public int[] getSize(String key) {
+        if ( !has( key ) )
+        {
+            return new int[0];
+        }
+
+        String[] spSize = getValue( key ).split( "x" );
+
+        if ( spSize.length != 2 )
+        {
+            return new int[0];
+        }
+
+        int w = Integer.parseInt( spSize[0] );
+        int h = Integer.parseInt( spSize[1] );
+
+        return new int[] { w, h };
     }
 
     public Color getColor(String key) {
@@ -52,7 +67,7 @@ public class Settings {
     }
 
     public boolean has(String key) {
-        return getBoolean( key );
+        return properties.containsKey( key );
     }
 
     public double getDouble(String key) {

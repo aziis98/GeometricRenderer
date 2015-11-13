@@ -1,25 +1,35 @@
 package com.aziis98.vrenderer.api.parser;
 
+import com.aziis98.vrenderer.api.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
 import java.awt.image.*;
 
 public class PreviewWindow {
 
     // Static Variables
-    public static final Color windowBackground = new Color( 0x303030 );
+    public static final Color           windowBackground   = new Color( 0x303030 );
+    public static final AffineTransform TRANSFORM_IDENTITY = new AffineTransform();
+    public static final String          INFO_BAR           =
+            "Drag with the left mouse button to move the image - " +
+            "Use the mouse wheel to zoom - " +
+            "Right click for the option menu";
 
     // Fields
+    private GeometricCanvas geometricCanvas;
     private BufferedImage preview;
     private JFrame jFrame;
 
-    private double scale = 1.0;
+    private double scale        = 1.0;
     private double translationX = 0.0;
     private double translationY = 0.0;
 
-    public PreviewWindow(BufferedImage preview) {
-        this.preview = preview;
+    public PreviewWindow(GeometricCanvas geometricCanvas, BufferedImage initialPreview) {
+        this.geometricCanvas = geometricCanvas;
+        this.preview = initialPreview;
 
         // Removes the flickering white resizing the window
         System.setProperty( "sun.awt.noerasebackground", "true" );
@@ -40,20 +50,100 @@ public class PreviewWindow {
 
         JPopupMenu popupMenu = new JPopupMenu();
 
-        JMenu menuZoom = new JMenu( "Zoom" );
+        JMenu     menu;
+        JMenuItem menuItem;
+
+        menu = new JMenu( "Zoom" );
         {
             // Zoom > 100%
-            JMenuItem menuZoomSet100 = new JMenuItem( "100%" );
+            menuItem = new JMenuItem( "Reset Zoom" );
             {
-                menuZoomSet100.addActionListener( e -> scale = 1F );
+                menuItem.addActionListener( e -> scale = 1.0 );
             }
-            menuZoom.add( menuZoomSet100 );
+            menu.add( menuItem );
 
+            // Zoom > Reset Translation
+            menuItem = new JMenuItem( "Reset Translation" );
+            {
+                menuItem.addActionListener( e -> translationX = translationY = 0 );
+            }
+            menu.add( menuItem );
+
+            // Zoom > Reset Translation
+            menuItem = new JMenuItem( "Reset Both" );
+            {
+                menuItem.addActionListener( e -> {
+                    scale = 1.0;
+                    translationX = translationY = 0;
+                } );
+            }
+            menu.add( menuItem );
         }
 
-        popupMenu.add( "Preview Options" );
+
+        {
+            menuItem = new JMenuItem( "PReview Options" );
+            menuItem.setEnabled( false );
+        }
+        popupMenu.add( menuItem );
         popupMenu.addSeparator();
-        popupMenu.add( menuZoom );
+        popupMenu.add( menu );
+        {
+            menu = new JMenu( "Dimension" );
+            {
+                menuItem = new JMenuItem( "By Sizes" );
+                menuItem.addActionListener( e -> {
+                    String response = JOptionPane.showInputDialog( jFrame, "Write the new render dimensions:", preview.getWidth() + "x" + preview.getHeight() );
+                    try
+                    {
+                        String[] spSize = response.trim().split( "x" );
+
+                        int w = Integer.parseInt( spSize[0] );
+                        int h = Integer.parseInt( spSize[1] );
+
+                        this.preview = geometricCanvas.renderImage( w, h );
+                    }
+                    catch (NumberFormatException exception)
+                    {
+                        JOptionPane.showMessageDialog( jFrame, "Incorrect dimension format!", "Input Error", JOptionPane.ERROR_MESSAGE );
+                    }
+                    catch (Exception exception)
+                    {
+                        exception.printStackTrace();
+                        JOptionPane.showMessageDialog( jFrame, "Error:\n    " + exception.toString(), "Error", JOptionPane.ERROR_MESSAGE );
+                    }
+                } );
+                menu.add( menuItem );
+
+
+                menuItem = new JMenuItem( "By Ratio-Resolution" );
+                menuItem.addActionListener( e -> {
+                    String response = JOptionPane.showInputDialog( jFrame, "Write the new render dimensions:", "16/9 1080p" );
+                    try
+                    {
+                        String[] spCpmp = response.trim().split( " " );
+                        String[] spFraction = spCpmp[0].split( "/" );
+
+                        float w = Integer.parseInt( spFraction[0] );
+                        float h = Integer.parseInt( spFraction[1] );
+
+                        this.preview = geometricCanvas.renderImage( w / h, Integer.parseInt( spCpmp[1].replace( "p", "" ) ) );
+                    }
+                    catch (NumberFormatException exception)
+                    {
+                        JOptionPane.showMessageDialog( jFrame, "Incorrect dimension format!", "Input Error", JOptionPane.ERROR_MESSAGE );
+                    }
+                    catch (Exception exception)
+                    {
+                        exception.printStackTrace();
+                        JOptionPane.showMessageDialog( jFrame, "Error:\n    " + exception.toString(), "Error", JOptionPane.ERROR_MESSAGE );
+                    }
+                } );
+                menu.add( menuItem );
+            }
+        }
+        popupMenu.add( menu );
+
 
         //endregion
 
@@ -67,10 +157,14 @@ public class PreviewWindow {
             @Override
             public void paint(Graphics g) {
                 BufferedImage buffer     = new BufferedImage( getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB );
+
                 Graphics2D    graphics2D = (Graphics2D) buffer.getGraphics();
+                {
+                    graphics2D.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+                    graphics2D.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
+                }
 
                 PreviewWindow.this.update( graphics2D );
-
                 g.drawImage( buffer, 0, 0, null );
 
                 repaint();
@@ -126,18 +220,9 @@ public class PreviewWindow {
             }
         } );
 
-        jCanvas.addMouseWheelListener( new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                scale -= e.getPreciseWheelRotation() * 0.2F;
-
-                scale =  scale < getMinZoom() ? getMinZoom() : scale;
-            }
-
-            private float getMinZoom() {
-                return preview.getWidth() / (float) getPaneWidth();
-            }
-
+        jCanvas.addMouseWheelListener( e -> {
+            scale -= e.getPreciseWheelRotation() * 0.2F;
+            // scale = scale < getMinZoom() ? getMinZoom() : scale;
         } );
 
         jFrame.getContentPane().add( jCanvas );
@@ -149,6 +234,9 @@ public class PreviewWindow {
         g.clearRect( 0, 0, jFrame.getWidth(), jFrame.getHeight() );
 
         g.translate( getPaneWidth() / 2, getPaneHeight() / 2 );
+
+        scale = scale < getMinZoom() ? getMinZoom() : scale;
+
         g.scale( scale, scale );
         g.translate( translationX, translationY );
 
@@ -156,6 +244,11 @@ public class PreviewWindow {
 
         g.setColor( Color.WHITE );
         g.drawRect( -preview.getWidth() / 2 - 2, -preview.getHeight() / 2 - 2, preview.getWidth() + 3, preview.getHeight() + 3 );
+
+        g.setTransform( TRANSFORM_IDENTITY );
+        g.setColor( Color.gray.brighter() );
+        g.setFont( new Font( "Segoe UI", Font.PLAIN, 15 ) );
+        g.drawString( INFO_BAR, 5, getPaneHeight() - 10 );
     }
 
     private void resize(int width, int height) {
@@ -168,6 +261,13 @@ public class PreviewWindow {
 
     private int getPaneHeight() {
         return jFrame.getContentPane().getHeight();
+    }
+
+    private float getMinZoom() {
+        float minPane    = Math.min( getPaneWidth() - 100, getPaneHeight() - 100 );
+        float minPreview = Math.min( preview.getWidth(), preview.getHeight() );
+
+        return Math.min(minPane / minPreview, 1F);
     }
 
 

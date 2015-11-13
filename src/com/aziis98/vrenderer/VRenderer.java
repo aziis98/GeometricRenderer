@@ -46,8 +46,8 @@ public class VRenderer {
             }
         }
 
-        Dictionary env = new Dictionary();
-        Canvas canvas = new Canvas();
+        Dictionary      env             = new Dictionary();
+        GeometricCanvas geometricCanvas = new GeometricCanvas();
 
         for (String line : lines)
         {
@@ -58,15 +58,23 @@ public class VRenderer {
             }
 
             Scanner scanner = new Scanner( line ).useLocale( Locale.US );
-            routePrimitive( scanner.next(), scanner, env, canvas );
+            routePrimitive( scanner.next(), scanner, env, geometricCanvas );
         }
 
         System.out.println("Loaded " + env.size() + " primitives");
-        // System.out.println("There are " + canvas.size() + " primitives on the draw stack");
+        // System.out.println("There are " + geometricCanvas.size() + " primitives on the draw stack");
 
         if ( Settings.configuration.has( "--preview" ) )
         {
-            previewWindow = new PreviewWindow( canvas.renderImage( 800, 600, 1F ) );
+            int[] sizes = Settings.configuration.getSize( "--size" );
+
+            if ( sizes.length != 2 )
+            {
+                sizes[0] = 800;
+                sizes[1] = 600;
+            }
+
+            previewWindow = new PreviewWindow( geometricCanvas, geometricCanvas.renderImage( sizes[0], sizes[1] ) );
         }
 
     }
@@ -76,13 +84,13 @@ public class VRenderer {
 
 
     /// point <name> <x> <y>
-    public static void parse_point(Scanner line, Dictionary env, Canvas canvas) {
+    public static void parse_point(Scanner line, Dictionary env, GeometricCanvas geometricCanvas) {
         String refName = nextPatternGroup( line, "'(.*?)'", 1 );
 
         env.add( refName, new PPoint( line.nextDouble(), line.nextDouble() ) );
     }
 
-    public static void parse_line(Scanner line, Dictionary env, Canvas canvas) {
+    public static void parse_line(Scanner line, Dictionary env, GeometricCanvas geometricCanvas) {
         String refName = nextPatternGroup( line, "'(.*?)'", 1 );
 
         PPoint pointA = env.<PPoint>get( line.next() );
@@ -91,7 +99,7 @@ public class VRenderer {
         env.add( refName, new PLine( pointA, pointB ) );
     }
 
-    public static void parse_line_perpendicular(Scanner line, Dictionary env, Canvas canvas) {
+    public static void parse_line_perpendicular(Scanner line, Dictionary env, GeometricCanvas geometricCanvas) {
         String refName = nextPatternGroup( line, "'(.*?)'", 1 );
 
         PLine  theLine = env.<PLine>get( line.next() );
@@ -100,28 +108,28 @@ public class VRenderer {
         env.add( refName, theLine.perpendicular( thePoint ) );
     }
 
-    public static void parse_color(Scanner line, Dictionary env, Canvas canvas) {
-        canvas.setColor( nextHexColor( line ) );
+    public static void parse_color(Scanner line, Dictionary env, GeometricCanvas geometricCanvas) {
+        geometricCanvas.setColor( nextHexColor( line ) );
     }
 
-    public static void parse_background(Scanner line, Dictionary env, Canvas canvas) {
-        canvas.setBackground( nextHexColor( line ) );
+    public static void parse_background(Scanner line, Dictionary env, GeometricCanvas geometricCanvas) {
+        geometricCanvas.setBackground( nextHexColor( line ) );
     }
 
-    public static void parse_draw(Scanner line, Dictionary env, Canvas canvas) {
-        canvas.draw( env.<ICanvasPainter>get( line.next() ) );
+    public static void parse_draw(Scanner line, Dictionary env, GeometricCanvas geometricCanvas) {
+        geometricCanvas.draw( env.<ICanvasPainter>get( line.next() ) );
     }
 
     //endregion
 
-    public static void routePrimitive(String command, Scanner line, Dictionary env, Canvas canvas) {
+    public static void routePrimitive(String command, Scanner line, Dictionary env, GeometricCanvas geometricCanvas) {
         try
         {
             String methodName = "parse_" + command.toLowerCase().replace( '-', '_' );
 
             VRenderer.class
-                    .getMethod( methodName, Scanner.class, Dictionary.class, Canvas.class )
-                    .invoke( null, line, env, canvas );
+                    .getMethod( methodName, Scanner.class, Dictionary.class, GeometricCanvas.class )
+                    .invoke( null, line, env, geometricCanvas );
         }
         catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
         {

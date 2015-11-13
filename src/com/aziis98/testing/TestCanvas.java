@@ -13,9 +13,9 @@ public class TestCanvas {
 
     public static void main(String[] args) throws IOException {
 
-        Canvas canvas = new Canvas();
+        GeometricCanvas geometricCanvas = new GeometricCanvas();
 
-        // canvas.traslateBy( 300, 100 );
+        // geometricCanvas.traslateBy( 300, 100 );
 
         PPoint p1 = new PPoint(200, 200);
         PPoint p2 = new PPoint(600, 460);
@@ -40,31 +40,31 @@ public class TestCanvas {
 
         System.out.println( Arrays.toString( ps2 ) );
 
-        canvas.setBackground( WHITE );
+        geometricCanvas.setBackground( WHITE );
 
-        canvas.setColor( RED );
-        canvas.draw( l1 );
-        canvas.draw( l2 );
-        canvas.draw( l3 );
+        geometricCanvas.setColor( RED );
+        geometricCanvas.draw( l1 );
+        geometricCanvas.draw( l2 );
+        geometricCanvas.draw( l3 );
 
-        canvas.setColor( BLACK );
-        canvas.draw( p1 );
-        canvas.draw( p2 );
-        canvas.draw( p3 );
-        canvas.draw( p4 );
+        geometricCanvas.setColor( BLACK );
+        geometricCanvas.draw( p1 );
+        geometricCanvas.draw( p2 );
+        geometricCanvas.draw( p3 );
+        geometricCanvas.draw( p4 );
 
-        canvas.draw( c1 );
-        canvas.draw( c2 );
+        geometricCanvas.draw( c1 );
+        geometricCanvas.draw( c2 );
 
-        canvas.setColor( BLUE );
-        canvas.draw( p5 );
-        canvas.draw( p6 );
-        canvas.draw( ps1 );
+        geometricCanvas.setColor( BLUE );
+        geometricCanvas.draw( p5 );
+        geometricCanvas.draw( p6 );
+        geometricCanvas.draw( ps1 );
 
-        canvas.setColor( GREEN );
-        canvas.draw( ps2 );
+        geometricCanvas.setColor( GREEN );
+        geometricCanvas.draw( ps2 );
 
-        ImageIO.write( canvas.renderImage( 1920, 1080, 1F ), "png", new File( "res/TestResult.png" ) );
+        ImageIO.write( geometricCanvas.renderImage( 1920, 1080 ), "png", new File( "res/TestResult.png" ) );
 
     }
 

@@ -16,7 +16,7 @@ import static com.aziis98.vrenderer.api.parser.ScannerUtils.*;
  * Arguments pattern: <br>
  * java -jar ... "res/vector.vec" --size=1920x1080 --format=PNG
  */
-public class VRenderer {
+public class GeometricRenderer {
 
     public static PreviewWindow previewWindow;
 
@@ -46,8 +46,33 @@ public class VRenderer {
             }
         }
 
-        Dictionary      env             = new Dictionary();
-        GeometricCanvas geometricCanvas = new GeometricCanvas();
+
+        if ( Settings.configuration.has( "--preview" ) )
+        {
+            int[] sizes = Settings.configuration.getSize( "--size" );
+
+            if ( sizes.length != 2 )
+            {
+                sizes[0] = 800;
+                sizes[1] = 600;
+            }
+
+            GeometricCanvas geometricCanvas = loadGeometricCanvas( lines );
+            previewWindow = new PreviewWindow( geometricCanvas, geometricCanvas.renderImage( sizes[0], sizes[1] ) );
+
+            if ( Settings.configuration.has( "--watch" ) )
+            {
+                new WatchFileService( path, () -> {
+                    System.out.println("The file changed, rendering...");
+                    previewWindow.updateGeometricCanvas( loadGeometricCanvas( Files.readAllLines( path ) ) );
+                }).start();
+            }
+        }
+
+    }
+
+    private static GeometricCanvas loadGeometricCanvas(List<String> lines) {Dictionary env             = new Dictionary();
+        GeometricCanvas                                                                geometricCanvas = new GeometricCanvas();
 
         for (String line : lines)
         {
@@ -62,21 +87,7 @@ public class VRenderer {
         }
 
         System.out.println("Loaded " + env.size() + " primitives");
-        // System.out.println("There are " + geometricCanvas.size() + " primitives on the draw stack");
-
-        if ( Settings.configuration.has( "--preview" ) )
-        {
-            int[] sizes = Settings.configuration.getSize( "--size" );
-
-            if ( sizes.length != 2 )
-            {
-                sizes[0] = 800;
-                sizes[1] = 600;
-            }
-
-            previewWindow = new PreviewWindow( geometricCanvas, geometricCanvas.renderImage( sizes[0], sizes[1] ) );
-        }
-
+        return geometricCanvas;
     }
 
     //region Renderer
@@ -127,7 +138,7 @@ public class VRenderer {
         {
             String methodName = "parse_" + command.toLowerCase().replace( '-', '_' );
 
-            VRenderer.class
+            GeometricRenderer.class
                     .getMethod( methodName, Scanner.class, Dictionary.class, GeometricCanvas.class )
                     .invoke( null, line, env, geometricCanvas );
         }

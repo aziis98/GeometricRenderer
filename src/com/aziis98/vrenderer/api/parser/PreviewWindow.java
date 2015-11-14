@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.*;
+import java.util.concurrent.atomic.*;
 
 public class PreviewWindow {
 
@@ -27,6 +28,8 @@ public class PreviewWindow {
     private double translationX = 0.0;
     private double translationY = 0.0;
 
+    private final AtomicReference<Float> notifyUpdate = new AtomicReference<>( 0F );
+
     public PreviewWindow(GeometricCanvas geometricCanvas, BufferedImage initialPreview) {
         this.geometricCanvas = geometricCanvas;
         this.preview = initialPreview;
@@ -39,12 +42,6 @@ public class PreviewWindow {
         jFrame.setLocationRelativeTo( null );
         jFrame.setSize( preview.getWidth(), preview.getHeight() );
         jFrame.setResizable( true );
-        jFrame.addComponentListener( new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                PreviewWindow.this.resize( getPaneWidth(), getPaneHeight() );
-            }
-        } );
 
         //region The Popup Menu
 
@@ -246,13 +243,18 @@ public class PreviewWindow {
         g.drawRect( -preview.getWidth() / 2 - 2, -preview.getHeight() / 2 - 2, preview.getWidth() + 3, preview.getHeight() + 3 );
 
         g.setTransform( TRANSFORM_IDENTITY );
+
         g.setColor( Color.gray.brighter() );
         g.setFont( new Font( "Segoe UI", Font.PLAIN, 15 ) );
         g.drawString( INFO_BAR, 5, getPaneHeight() - 10 );
-    }
 
-    private void resize(int width, int height) {
+        if ( notifyUpdate.get() > 0F )
+        {
+            g.setColor( new Color( 0, 200, 200, (int) (notifyUpdate.get() * 255) ) );
+            g.drawString( "The file has been updated", 5, 15 );
 
+            notifyUpdate.set( notifyUpdate.get() - 0.003F );
+        }
     }
 
     private int getPaneWidth() {
@@ -270,14 +272,16 @@ public class PreviewWindow {
         return Math.min(minPane / minPreview, 1F);
     }
 
-
-    public PreviewWindow setPreview(BufferedImage preview) {
-        this.preview = preview;
-        resize( jFrame.getWidth(), jFrame.getHeight() );
-
+    public PreviewWindow updateGeometricCanvas(GeometricCanvas geometricCanvas) {
+        this.geometricCanvas = geometricCanvas;
+        this.preview = geometricCanvas.renderImage( this.preview.getWidth(), this.preview.getHeight() );
+        notifyGeometricCanvasUpdate();
         return this;
     }
 
+    private void notifyGeometricCanvasUpdate() {
+        this.notifyUpdate.set( 1F );
+    }
 }
 
 
